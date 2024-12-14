@@ -69,7 +69,7 @@ func storeCard(c *fiber.Ctx) error {
 
 		// Check if the limit of 6 cards is reached
 		if len(selectedCards) >= 6 {
-			return c.SendString("Limit of 6 cards reached")
+			return c.Status(400).SendString("Limit of 6 cards reached")
 		}
 
 		// Add the new card
