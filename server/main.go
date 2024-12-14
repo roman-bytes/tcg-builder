@@ -22,7 +22,15 @@ type Card struct {
 
 var storedCards []Card
 
+func clearCookies(c *fiber.Ctx) error {
+	c.Cookie(&fiber.Cookie{
+		Name: "storedCards",
+		Expires: time.Now().Add(-1 * time.Hour),
+	})
+	return c.Next()
+}
 
+/* Setup App */
 func setupApp() *fiber.App {
 	app := fiber.New()
 
@@ -32,6 +40,8 @@ func setupApp() *fiber.App {
 		log.Fatal("Error loading .env file")
 	}
 
+	// Clear stored cards cookie
+	app.Use(clearCookies)
 
 	// Deinfe Routes
 	app.Get("/random-card", getRandomCard)
@@ -41,7 +51,7 @@ func setupApp() *fiber.App {
 	return app
 }
 
-
+/* Routes */
 func storeCard(c *fiber.Ctx) error {
 	var card Card
 	if err := c.BodyParser(&card); err != nil {
@@ -128,7 +138,6 @@ func getRandomCard(c *fiber.Ctx) error {
 
 	return c.JSON(cards);
 }
-
 
 func main() {
 	app := setupApp()
