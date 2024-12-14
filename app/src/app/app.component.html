@@ -5,13 +5,23 @@
     <div>Card Name: {{ randomCard[0].name }}</div>
     <div>Card Image: <img [src]="randomCard[0].images.large" alt="Card Image" /></div>
     <button (click)="nextRandomCard()">Next Card</button>
+    <button (click)="saveCurrentCard()">Save Card</button>
   </div>
 
-  <h1>Stored Cards</h1>
+  {{ storedCards }}
+
+  <h2>Stored Cards</h2>
   <ul>
     <li *ngFor="let card of storedCards">
+      {{ storedCards.length }}
+      <pre>{{ storedCards | json }}</pre>
       <div>Card Name: {{ card.name }}</div>
-      <div>Card Image: <img [src]="card.images.large" alt="Card Image" /></div>
+      <div>Card Image: <img [src]="card.image" alt="Card Image" /></div>
     </li>
   </ul>
+
+  <h2>Cookie Value</h2>
+  <div *ngIf="storedCards">
+    <pre>{{ storedCards | json }}</pre>
+  </div>
 </div>

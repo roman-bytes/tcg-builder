@@ -1,25 +1,39 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ApiService } from './api.service';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   standalone: true,
   imports: [CommonModule],
+  providers: [CookieService],
   styleUrl: './app.component.css'
 })
 export class AppComponent implements OnInit {
   randomCard: any;
   storedCards: any[] = [];
 
-  constructor(private apiService: ApiService) { }
+  constructor(private apiService: ApiService, private cookieService: CookieService) { }
 
   ngOnInit(): void {
     this.fetchRandomCard();
-    this.fetchStoredCards();
+    this.getCookie();
+  }
 
-    console.log('randomCard', this.randomCard);
+  getCookie(): void {
+    console.log('GET COOKIE!!!')
+    const cookieCards = this.cookieService.get('storedCards');
+    if (cookieCards) {
+      try {
+        this.storedCards = JSON.parse(cookieCards);
+      } catch (error) {
+        console.error('Error parsing stored cards from cookie', error);
+      }
+    } else {
+      console.log('No stored cards found in cookie')
+    }
   }
 
   // ** Get a random card */
@@ -34,23 +48,16 @@ export class AppComponent implements OnInit {
       });
   }
 
-  // ** Get stored cards */
-  fetchStoredCards(): void {
-    this.apiService.getStoredCards()
-      .then(cards => {
-        this.storedCards = cards;
-      })
-      .catch(error => {
-        console.error('Error fetching stored cards', error);
-      });
-  }
-
   // ** Store a card */
   storeCard(card: any): void {
-    this.apiService.storeCard(card)
+    this.apiService.storeCard({
+      id: card.id,
+      name: card.name,
+      image: card.images.large
+    })
       .then(response => {
         console.log('Card stored successfully', response);
-        this.fetchStoredCards();
+        this.getCookie();
       })
       .catch(error => {
         console.error('Error storing card', error);
@@ -60,5 +67,14 @@ export class AppComponent implements OnInit {
   // Next button click method
   nextRandomCard(): void {
     this.fetchRandomCard();
+  }
+
+  // Save the current card
+  saveCurrentCard(): void {
+    if (this.randomCard && this.randomCard.length > 0) {
+      this.storeCard(this.randomCard[0]);
+    } else {
+      console.error('No card to store');
+    }
   }
 }
