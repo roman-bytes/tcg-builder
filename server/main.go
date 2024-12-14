@@ -134,7 +134,9 @@ func getRandomCard(c *fiber.Ctx) error {
 
 	if err != nil {
 		log.Fatal(err)
-			}
+	}
+
+	// TODO: Simplify what we return from the API.
 
 	return c.JSON(cards);
 }
