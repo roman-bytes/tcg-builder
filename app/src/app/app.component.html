@@ -1,2 +1,17 @@
+<div>
+  <h1>Random Card</h1>
+  <div *ngIf="randomCard">
+    <h2>Card details</h2>
+    <div>Card Name: {{ randomCard[0].name }}</div>
+    <div>Card Image: <img [src]="randomCard[0].images.large" alt="Card Image" /></div>
+    <button (click)="nextRandomCard()">Next Card</button>
+  </div>
 
-<router-outlet />
+  <h1>Stored Cards</h1>
+  <ul>
+    <li *ngFor="let card of storedCards">
+      <div>Card Name: {{ card.name }}</div>
+      <div>Card Image: <img [src]="card.images.large" alt="Card Image" /></div>
+    </li>
+  </ul>
+</div>
