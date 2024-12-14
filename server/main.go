@@ -5,6 +5,7 @@ import (
 	"math/rand"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
   	tcg "github.com/PokemonTCG/pokemon-tcg-sdk-go-v2/pkg"
   	"github.com/PokemonTCG/pokemon-tcg-sdk-go-v2/pkg/request"
 
@@ -33,6 +34,13 @@ func clearCookies(c *fiber.Ctx) error {
 /* Setup App */
 func setupApp() *fiber.App {
 	app := fiber.New()
+
+	// Enable CORS
+	app.Use(cors.New(cors.Config{
+		AllowOrigins: "*",
+		AllowHeaders: "Origin, Content-Type, Accept",
+	}))
+
 
 	// Load .env file
 	err := godotenv.Load()
