@@ -13,7 +13,6 @@ import (
 	"time"
 	"encoding/json"
 	"github.com/joho/godotenv"
-	"fmt"
 )
 
 type Card struct {
@@ -80,15 +79,9 @@ func storeCard(c *fiber.Ctx) error {
 		}
 	}
 
-
-	fmt.Println("SELECTED CARDS", selectedCards)
-	fmt.Println("NEW CARD", card)
-
-
 	// Add the new card if its not already in the cookie
 	for _, storedCard := range selectedCards {
 		if storedCard.ID == card.ID {
-			fmt.Println("Card already stored")
 			return c.SendString("Card already stored")
 		}
 	}
@@ -106,8 +99,6 @@ func storeCard(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(500).SendString("Error marshalling cookie")
 	}
-	fmt.Println("COOKIE UPDATED",updatedCookie)
-
 	c.Cookie(&fiber.Cookie{
 		Name: "storedCards",
 		Value: string(updatedCookie),
@@ -124,12 +115,9 @@ func getStoredCards(c *fiber.Ctx) error {
 
 	// Get cookie
 	existingCookie := c.Cookies("storedCards")
-	fmt.Println("EXISTING COOKIE", existingCookie)
 	var selectedCards []Card
-	fmt.Println("selectedCards", selectedCards)
 	
 	if existingCookie == "" {
-		fmt.Println("Cookie is empty")
 		return c.JSON([]Card{})
 	
 	}
