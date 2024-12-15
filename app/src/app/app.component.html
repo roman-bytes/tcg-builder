@@ -1,27 +1,18 @@
-<div>
-  <h1>Random Card</h1>
-  <div *ngIf="randomCard">
-    <h2>Card details</h2>
-    <div>Card Name: {{ randomCard[0].name }}</div>
-    <div>Card Image: <img [src]="randomCard[0].images.large" alt="Card Image" /></div>
-    <button (click)="nextRandomCard()">Next Card</button>
-    <button (click)="saveCurrentCard()">Save Card</button>
+<div class="bg-indigo-900 text-white h-full w-full pt-20 flex flex-col items-center overflow-hidden">
+  <h1 class="text-4xl font-bold">Pokemon Pick Six of the day</h1>
+  <p class="text-xl">Pick your six favorite Pokemon to have on your team for the day.</p>
+  <div class="flex justify-center items-center flex-col mt-10" *ngIf="randomCard">
+    <img class="w-[300px] h-full rounded shadow-lg" [src]="randomCard[0].images.large" alt="Card Image" />
+    <div class="flex mt-10 font-bold">
+      <button class="bg-amber-600 rounded border border-slate-700 py-4 px-8" (click)="nextRandomCard()">Next Card</button>
+      <button class="bg-amber-800 rounded border border-slate-800 py-4 px-8 ml-6" (click)="saveCurrentCard()">Save Card</button>
+    </div>
   </div>
+  <div *ngIf="error" class="text-red-500 text-4xl mt-4">{{ error }}</div>
 
-  {{ storedCards }}
-
-  <h2>Stored Cards</h2>
-  <ul>
-    <li *ngFor="let card of storedCards">
-      {{ storedCards.length }}
-      <pre>{{ storedCards | json }}</pre>
-      <div>Card Name: {{ card.name }}</div>
-      <div>Card Image: <img [src]="card.image" alt="Card Image" /></div>
+  <ul class="absolute bottom-[-5%] left-0 right-0 flex justify-evenly items-center">
+    <li class="rotate-[18deg]" *ngFor="let card of storedCards; let i = index" [ngClass]="'position-' + i * 20">
+      <img class="w-[300px] h-full rounded shadow-lg" [src]="card.image" alt="Card Image" />
     </li>
   </ul>
-
-  <h2>Cookie Value</h2>
-  <div *ngIf="storedCards">
-    <pre>{{ storedCards | json }}</pre>
-  </div>
 </div>

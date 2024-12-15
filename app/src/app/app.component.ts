@@ -14,6 +14,7 @@ import { CookieService } from 'ngx-cookie-service';
 export class AppComponent implements OnInit {
   randomCard: any;
   storedCards: any[] = [];
+  error: any;
 
   constructor(private apiService: ApiService, private cookieService: CookieService) { }
 
@@ -58,6 +59,10 @@ export class AppComponent implements OnInit {
       .then(response => {
         console.log('Card stored successfully', response);
         this.getCookie();
+        this.fetchRandomCard();
+        if (response === 'Card already stored') {
+          this.error = 'Card already stored';
+        }
       })
       .catch(error => {
         console.error('Error storing card', error);
