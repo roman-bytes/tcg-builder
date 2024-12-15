@@ -11,17 +11,12 @@ export class ApiService {
 
   //** Get a random card */
   getRandomCard(): Promise<any> {
-    console.log(`${this.baseURL}/random-card`);
     return fetch(`${this.baseURL}/random-card`)
       .then(response => {
         if (!response.ok) {
           throw new Error('Could not fetch random card');
         }
         return response.json();
-      })
-      .then(card => {
-        console.log('Fetched card:', card);
-        return card;
       })
   }
 

@@ -24,7 +24,6 @@ export class AppComponent implements OnInit {
   }
 
   getCookie(): void {
-    console.log('GET COOKIE!!!')
     const cookieCards = this.cookieService.get('storedCards');
     if (cookieCards) {
       try {
@@ -41,7 +40,6 @@ export class AppComponent implements OnInit {
   fetchRandomCard(): void {
     this.apiService.getRandomCard()
       .then(card => {
-        console.log('Random card fetched successfully', card);
         this.randomCard = card;
       })
       .catch(error => {
@@ -57,7 +55,6 @@ export class AppComponent implements OnInit {
       image: card.images.large
     })
       .then(response => {
-        console.log('Card stored successfully', response);
         this.getCookie();
         this.fetchRandomCard();
         if (response === 'Card already stored') {
