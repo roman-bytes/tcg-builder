@@ -50,7 +50,6 @@ func setupApp() *fiber.App {
 	}
 
 	// Clear stored cards cookie
-	fmt.Println("Clearing stored cards cookie")
 	app.Use(clearCookies)
 
 	// Deinfe Routes
@@ -126,7 +125,6 @@ func getStoredCards(c *fiber.Ctx) error {
 		return c.Status(500).SendString("Error unmarshalling cookie")
 	}
 
-	fmt.Println("return cookie", selectedCards);
 	return c.JSON(selectedCards)
 }
 

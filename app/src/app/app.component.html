@@ -4,14 +4,26 @@
   <div class="flex justify-center items-center flex-col mt-10" *ngIf="randomCard">
     <img class="w-[300px] h-full rounded shadow-lg" [src]="randomCard[0].images.large" alt="Card Image" />
     <div class="flex mt-10 font-bold">
-      <button class="bg-amber-600 rounded border border-slate-700 py-4 px-8" (click)="nextRandomCard()">Next Card</button>
-      <button class="bg-amber-800 rounded border border-slate-800 py-4 px-8 ml-6" (click)="saveCurrentCard()">Save Card</button>
+      <button 
+        class="bg-amber-600 rounded border border-slate-700 py-4 px-8" 
+        (click)="nextRandomCard()"
+      >
+        Next Card
+      </button>
+      <button 
+        class="bg-amber-800 rounded border border-slate-800 py-4 px-8 ml-6" 
+        (click)="saveCurrentCard()"
+        [disabled]="storedCards.length >= 6"
+      >
+        Save Card
+      </button>
     </div>
   </div>
-  <div *ngIf="error" class="text-red-500 text-4xl mt-4">{{ error }}</div>
+  <div *ngIf="error" class="text-red-500 text-4xl mt-4">ERROR: {{ error }}</div>
+  <div *ngIf="storedCards.length === 6" class="text-4xl mt-4" >Congrats on your pick six for the day! Looks like a great team.</div>
 
-  <ul class="absolute bottom-[-5%] left-0 right-0 flex justify-evenly items-center">
-    <li class="rotate-[18deg]" *ngFor="let card of storedCards; let i = index" [ngClass]="'position-' + i * 20">
+  <ul class="absolute bottom-[-25%] left-0 right-0 flex justify-evenly items-center">
+    <li class="mb-200px rotate-[18deg] hover:rotate-[0deg] hover:scale-110 hover:z-10 hover:shadow-2xl hover:-translate-y-[95%] transition-all" *ngFor="let card of storedCards; let i = index" [ngClass]="'position-' + i * 20">
       <img class="w-[300px] h-full rounded shadow-lg" [src]="card.image" alt="Card Image" />
     </li>
   </ul>

@@ -24,7 +24,9 @@ export class AppComponent implements OnInit {
   }
 
   getCookie(): void {
+    console.log('Getting cookie');
     const cookieCards = this.cookieService.get('storedCards');
+    console.log('Cookie cards:', cookieCards);
     if (cookieCards) {
       try {
         this.storedCards = JSON.parse(cookieCards);
@@ -57,12 +59,17 @@ export class AppComponent implements OnInit {
       .then(response => {
         this.getCookie();
         this.fetchRandomCard();
-        if (response === 'Card already stored') {
-          this.error = 'Card already stored';
-        }
+
       })
       .catch(error => {
-        console.error('Error storing card', error);
+        if (error.message === 'Card already stored') {
+          this.error = 'Card already stored';
+          return;
+        }
+        if (error.message === 'Could not store card') {
+          this.error = 'Limit of 6 cards reached';
+          return;
+        }
       })
   }
 
@@ -74,6 +81,11 @@ export class AppComponent implements OnInit {
   // Save the current card
   saveCurrentCard(): void {
     if (this.randomCard && this.randomCard.length > 0) {
+      if (this.storedCards.length == 6) {
+        this.error = 'Limit of 6 cards reached';
+        return;
+      }
+      
       this.storeCard(this.randomCard[0]);
     } else {
       console.error('No card to store');
