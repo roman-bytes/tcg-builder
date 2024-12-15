@@ -13,6 +13,7 @@ import (
 	"time"
 	"encoding/json"
 	"github.com/joho/godotenv"
+	"fmt"
 )
 
 type Card struct {
@@ -37,7 +38,8 @@ func setupApp() *fiber.App {
 
 	// Enable CORS
 	app.Use(cors.New(cors.Config{
-		AllowOrigins: "*",
+		AllowOrigins: "http://localhost:4200",
+		AllowCredentials: true,
 		AllowHeaders: "Origin, Content-Type, Accept",
 	}))
 
@@ -49,6 +51,7 @@ func setupApp() *fiber.App {
 	}
 
 	// Clear stored cards cookie
+	fmt.Println("Clearing stored cards cookie")
 	app.Use(clearCookies)
 
 	// Deinfe Routes
@@ -77,9 +80,15 @@ func storeCard(c *fiber.Ctx) error {
 		}
 	}
 
+
+	fmt.Println("SELECTED CARDS", selectedCards)
+	fmt.Println("NEW CARD", card)
+
+
 	// Add the new card if its not already in the cookie
 	for _, storedCard := range selectedCards {
 		if storedCard.ID == card.ID {
+			fmt.Println("Card already stored")
 			return c.SendString("Card already stored")
 		}
 	}
@@ -97,11 +106,15 @@ func storeCard(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(500).SendString("Error marshalling cookie")
 	}
+	fmt.Println("COOKIE UPDATED",updatedCookie)
 
 	c.Cookie(&fiber.Cookie{
 		Name: "storedCards",
 		Value: string(updatedCookie),
 		Expires: time.Now().Add(time.Hour * 24),
+		Path: "/",
+		Secure: false,
+		SameSite: "Lax",
 	})
 
 	return c.Status(200).SendString("Card stored successfully")
@@ -111,16 +124,21 @@ func getStoredCards(c *fiber.Ctx) error {
 
 	// Get cookie
 	existingCookie := c.Cookies("storedCards")
+	fmt.Println("EXISTING COOKIE", existingCookie)
 	var selectedCards []Card
+	fmt.Println("selectedCards", selectedCards)
 	
 	if existingCookie == "" {
+		fmt.Println("Cookie is empty")
 		return c.JSON([]Card{})
+	
 	}
 
 	if err := json.Unmarshal([]byte(existingCookie), &selectedCards); err != nil {
 		return c.Status(500).SendString("Error unmarshalling cookie")
 	}
 
+	fmt.Println("return cookie", selectedCards);
 	return c.JSON(selectedCards)
 }
 
